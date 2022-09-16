@@ -3,8 +3,6 @@ const routes = [];
 function init() {
     window.addEventListener('load', onChangeRoute);
     window.addEventListener('hashchange', onChangeRoute);
-
-
 }
 
 export function registerRoute(route, callback) {
@@ -13,18 +11,10 @@ export function registerRoute(route, callback) {
 }
 
 function onChangeRoute(event) {
-    const [path, query] = window.location.hash.slice(1).split('?');
-    const pathNodes = path.split('/');
-    const pathParams = [];
-    const queryParams = !query ? [] : query.split('&')
-        .reduce((arr, o) => {
-            const oParts = o.split('=');
-            arr[oParts[0]] = [oParts[1]];
-            return arr;
-        });
-    const route = resolveRoute(pathNodes, pathParams);
-    console.log(queryParams);
-    //route(pathNodes, queryParams);
+    let hashNodes = [], hashParams = [], queryParams = [];
+    extractParameters(window.location.href, hashNodes, queryParams);
+    const route = resolveRoute(hashNodes, hashParams);
+    route.callback(hashParams, queryParams);
 }
 
 function resolveRoute(requestedRoute, queryParams) {
@@ -46,15 +36,32 @@ function resolveRoute(requestedRoute, queryParams) {
                 break;
             }
             match = false;
+            break;
         }
         if (match) {
             return route;
         }
     }
-    if (!callback) {
-        // serve default route
+    // return default route
+    // TODO: this should probably be refactored to somehow allow setting a fallback route by the app.js
+    return routes.find(r => r.name == '');
+}
+
+function extractParameters(url, hashNodes, queryParams) {
+    if (url.includes('#')) {
+        let hash = url.slice(url.indexOf('#') + 2);
+        if (hash.includes('?')) {
+            hash = hash.slice(0, hash.indexOf('?'));
+        }
+        hash.split('/').forEach(x => hashNodes.push(x));
     }
-    return callback;
+    if (url.includes('?')) {
+        let query = url.slice(url.indexOf('?') + 1).split('&');
+        query.forEach(x => {
+            const [key, val] = x.split('=');
+            queryParams[key] = val;
+        })
+    }
 }
 
 init();

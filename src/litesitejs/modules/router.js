@@ -1,3 +1,5 @@
+import * as logging from './logging.js';
+
 const routes = [];
 
 function init() {
@@ -15,6 +17,7 @@ function onChangeRoute(event) {
     extractParameters(window.location.href, hashNodes, queryParams);
     const route = resolveRoute(hashNodes, hashParams);
     route.callback(hashParams, queryParams);
+    logging.logRoute(route);
 }
 
 function resolveRoute(requestedRoute, queryParams) {

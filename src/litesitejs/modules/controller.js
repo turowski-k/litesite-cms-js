@@ -1,19 +1,32 @@
+import * as renderer from './renderer.js';
+
+const contentNode = document.getElementById('content-node');
+
 export function home(hashParams, queryParams) {
-    console.log('home ok');
+    const view = renderer.renderView('home', hashParams, queryParams);
+    pushView(view);
 }
 
 export function blogView(hashParams, queryParams) {
-    console.log('blogView ok');
+    const view = renderer.renderView('blog-view', hashParams, queryParams);
+    pushView(view);
 }
 
 export function blog(hashParams, queryParams) {
-    console.log('blog ok');
+    const view = renderer.renderView('blog', hashParams, queryParams);
+    pushView(view);
 }
 
 export function pages(hashParams, queryParams) {
-    console.log('pages ok');
+    const view = renderer.renderView('pages', hashParams, queryParams);
+    pushView(view);
 }
 
 export function pagesView(hashParams, queryParams) {
-    console.log('pagesView ok');
+    const view = renderer.renderView('pages-view', hashParams, queryParams);
+    pushView(view);
+}
+
+function pushView(view) {
+    contentNode.innerHTML = view;
 }

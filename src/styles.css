@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+body {
+    padding: 0px;
+    margin: 0px;
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    background: linear-gradient(#7FBCD2, #A5F1E9);
+    background-attachment: fixed;
+}
+
+p {
+    line-height: 2rem;
+}
+
+.content-body {
+    margin: 0 auto;
+    max-width: 700px;
+    padding-bottom: 52px;
+}
+
+.block-bg {
+    background-color: rgba(225, 255, 238, 1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (min-width: 600px) {
+    body {
+        font-size: 1.5rem;
+    }
+
+    p {
+        line-height: 1.5em;
+    }
+
+    .content-body {
+        padding-bottom: 26px;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    .content-body {
+        min-width: 800px;
+    }
+}
+
+/* HEADER */
+
+header {
+    margin-top: 16px;
+}
+
+header h1 {
+    display: flex;
+    justify-content: center;
+}
+
+header menu {
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+header menu li {
+    list-style: none;
+    display: inline-block;
+    padding: 5px;
+    font-size: 1.5em;
+}
+
+@media (min-width: 600px) {
+    header menu {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        font-size: 1.25em;
+    }
+
+    header menu li {
+        padding: 10px;
+        margin: 0 15px;
+    }
+
+    header menu li:first-of-type {
+        margin-left: 0px;
+    }
+
+    header menu li:last-of-type {
+        margin-right: 0px;
+    }
+}
+
+/* MAIN */
+
+main {
+    padding: 15px 32px;
+    margin: 32px 0;
+    text-align: justify;
+}
+
+/* FOOTER */
+
+footer {
+    background-color: black;
+    color: white;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    height: 74px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.footer-separator {
+    display: none;
+}
+
+.footer-block {
+    display: block;
+}
+
+.link {
+    cursor: pointer;
+}
+
+@media (min-width: 600px) {
+    footer {
+        height: 36px;
+        line-height: 36px;
+        text-align: center;
+    }
+
+    .footer-separator {
+        display: inline-block;
+    }
+
+    .footer-block {
+        display: inline-block;
+    }
+}

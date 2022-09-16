@@ -1,0 +1,22 @@
+{
+    "menu": [
+        {
+            "name": "Home",
+            "type": "page",
+            "id": "sample-page"
+        },
+        {
+            "name": "Blog",
+            "type": "special",
+            "id": "posts"
+        },
+        {
+            "name": "Tests",
+            "type": "special",
+            "id": "posts",
+            "categories": [
+                "Test post"
+            ]
+        }
+    ]
+}

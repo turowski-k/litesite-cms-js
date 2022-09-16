@@ -1,0 +1,9 @@
+{
+    "pages": [
+        {
+            "id": "sample-page",
+            "file": "sample-page.md",
+            "name": "Sample page"
+        }
+    ]
+}

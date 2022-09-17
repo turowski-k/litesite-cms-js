@@ -16,7 +16,8 @@ function onChangeRoute(event) {
     let hashNodes = [], hashParams = [], queryParams = [];
     extractParameters(window.location.href, hashNodes, queryParams);
     const route = resolveRoute(hashNodes, hashParams);
-    route.callback(hashParams, queryParams);
+    const viewModel = { hashParams: Object.assign({}, hashParams), queryParams: Object.assign({}, queryParams) };
+    route.callback(viewModel);
     logging.logRoute(route);
 }
 

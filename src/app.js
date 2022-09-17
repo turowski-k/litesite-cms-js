@@ -1,7 +1,6 @@
 import * as moduleRouter from './litesitejs/modules/router.js';
 import * as moduleController from './litesitejs/modules/controller.js';
 
-moduleRouter.registerRoute('', moduleController.home);
 moduleRouter.registerRoute('blog/:id/*', moduleController.blogView);
 moduleRouter.registerRoute('blog/:id', moduleController.blogView);
 moduleRouter.registerRoute('blog', moduleController.blog);

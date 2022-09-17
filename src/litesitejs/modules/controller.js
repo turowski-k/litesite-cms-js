@@ -3,28 +3,28 @@ import * as renderer from './renderer.js';
 const contentNode = document.getElementById('content-node');
 
 export function home(hashParams, queryParams) {
-    const view = renderer.renderView('home', hashParams, queryParams);
-    pushView(view);
+    renderer.renderView('home', hashParams, queryParams)
+        .then(v => pushView(v));
 }
 
 export function blogView(hashParams, queryParams) {
-    const view = renderer.renderView('blog-view', hashParams, queryParams);
-    pushView(view);
+    renderer.renderView('blog-view', hashParams, queryParams)
+        .then(v => pushView(v));
 }
 
 export function blog(hashParams, queryParams) {
-    const view = renderer.renderView('blog', hashParams, queryParams);
-    pushView(view);
+    renderer.renderView('blog', hashParams, queryParams)
+        .then(v => pushView(v));
 }
 
 export function pages(hashParams, queryParams) {
-    const view = renderer.renderView('pages', hashParams, queryParams);
-    pushView(view);
+    renderer.renderView('pages', hashParams, queryParams)
+        .then(v => pushView(v));
 }
 
 export function pagesView(hashParams, queryParams) {
-    const view = renderer.renderView('pages-view', hashParams, queryParams);
-    pushView(view);
+    renderer.renderView('pages-view', hashParams, queryParams)
+        .then(v => pushView(v));
 }
 
 function pushView(view) {

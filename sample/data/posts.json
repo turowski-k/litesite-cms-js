@@ -2,7 +2,6 @@
     "posts": [
         {
             "id": "sample-post",
-            "file": "sample-post.md",
             "name": "Sample post",
             "date": "2022-06-19",
             "categories": [

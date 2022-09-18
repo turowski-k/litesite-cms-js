@@ -1,6 +1,6 @@
-import * as text from './text.js';
+import * as layoutModule from './layout.js';
 
-export async function renderView(viewName) {
-    const content = await text.getFileContent('./data/sample.md');
-    return content;
+export async function renderView(viewName, viewModel) {
+    const view = await layoutModule.getView(viewName, viewModel);
+    document.body.innerHTML = view;
 }

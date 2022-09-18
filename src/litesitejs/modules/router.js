@@ -16,7 +16,8 @@ function onChangeRoute(event) {
     let hashNodes = [], hashParams = [], queryParams = [];
     extractParameters(window.location.href, hashNodes, queryParams);
     const route = resolveRoute(hashNodes, hashParams);
-    route.callback(hashParams, queryParams);
+    const viewModel = { hashParams: Object.assign({}, hashParams), queryParams: Object.assign({}, queryParams) };
+    route.callback(viewModel);
     logging.logRoute(route);
 }
 
@@ -32,7 +33,7 @@ function resolveRoute(requestedRoute, queryParams) {
                 continue;
             }
             // check if route node calls for parameter and assign it
-            else if (route.path[i][0] === ':') {
+            else if (route.path[i][0] === ':' && requestedRoute[i] !== '') {
                 const nodeKey = route.path[i].slice(1);
                 queryParams[nodeKey] = requestedRoute[i];
                 continue;

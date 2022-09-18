@@ -1,4 +1,5 @@
 import * as configModule from './config.js';
+import * as loggingModule from './logging.js';
 
 const regex = /{{([-]){0,1}([\w\.\-\_]+)(?:\|([\w\.\-\_]+)){0,1}}}/g;
 const regexBoilerplate = /{{([=]){0,1}([\w\.\-\_]+)(?:\|([\w\.\-\_]+)){0,1}}}/g;
@@ -59,6 +60,8 @@ async function parseElement(element, viewModel) {
 }
 
 async function attemptBoilerplate(element, viewModel) {
+    regexBoilerplate.lastIndex = 0;
+    regexBody.lastIndex = 0;
     const boilerplateTag = regexBoilerplate.exec(element);
     if (!boilerplateTag) return element;
     element = replaceTag(element, boilerplateTag, '');
@@ -93,3 +96,14 @@ function sanitizeVariable(variable) {
     }
     return variable;
 }
+
+function init() {
+    const s = document.createElement('link');
+    s.rel = 'stylesheet';
+    s.href = `./litesitejs/themes/${configModule.getTheme()}/styles.css`;
+    s.type = 'text/css';
+    document.head.appendChild(s);
+    loggingModule.logInfo('Initialized theme CSS');
+}
+
+init();

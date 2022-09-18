@@ -102,7 +102,7 @@ async function parseIfs(element, viewModel) {
         }
         regexIfOpen.lastIndex = 0;
         regexIfClose.lastIndex = 0;
-        element = parseIf(element, tag, tagClose, tag[1]);
+        element = parseIf(element, tag, tagClose, tag[1], viewModel);
     }
     return element;
 }
@@ -129,15 +129,27 @@ function replaceTag(element, tag, replacement) {
     return left + replacement + right;
 }
 
-function parseIf(element, openTag, closeTag, hide) {
+function parseIf(element, openTag, closeTag, show, viewModel) {
     const left = element.substring(0, openTag.index);
     const right = element.substring(closeTag.index + closeTag[0].length);
     const middle = element.substring(openTag.index + openTag[0].length, closeTag.index);
-    const val = eval(hide);
-    console.log(hide, hide == 'true')
-    return val
-        ? left + right
-        : left + middle + right;
+    // maybe, just in case, offer some failsafe inc case vm already has litesitejsevaluator?    
+    let value = evaluateWithinScope(openTag[1], viewModel);
+    return value
+        ? left + middle + right
+        : left + right;
+}
+
+function evaluateWithinScope(evaluator, context) {
+    let value = false;
+    try {
+        eval(`value = ${evaluator};`);
+    } catch (e) {
+        try {
+            eval(`value = context.${evaluator};`);
+        } catch (e) { }
+    }
+    return value;
 }
 
 function evaluateVariable(path, viewModel) {

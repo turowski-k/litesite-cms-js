@@ -1,3 +1,27 @@
 {{=boilerplate}}
-Test
-{{-partial.pill|posts}}
+Blog entries
+{{-partial.postEntry|posts}}
+{{?first}}
+SHOW FIRST
+{{?}}
+
+{{?second}}
+SHOW SECOND
+{{?inner1}}
+HIDE NESTED SECOND
+{{?}}
+{{?inner2}}
+SHOW NESTED SECOND
+{{?}}
+{{?}}
+
+
+{{?third}}
+HIDE THIRD
+{{?inner3}}
+INNER HIDE
+{{?}}
+{{?inner4}}
+INNER HIDE
+{{?}}
+{{?}}

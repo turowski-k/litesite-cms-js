@@ -23,6 +23,7 @@ export function blog(viewModel) {
     dataModule.getPosts(viewModel.queryParams)
         .then(ps => {
             viewModel.posts = ps;
+            console.log(viewModel);
             rendererModule.renderView('blog', viewModel);
         });
 }

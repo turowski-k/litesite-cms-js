@@ -33,7 +33,7 @@ function resolveRoute(requestedRoute, queryParams) {
                 continue;
             }
             // check if route node calls for parameter and assign it
-            else if (route.path[i][0] === ':' && requestedRoute[i] !== '') {
+            else if (route.path[i][0] === ':' && requestedRoute[i] !== '' && requestedRoute[i] !== undefined) {
                 const nodeKey = route.path[i].slice(1);
                 queryParams[nodeKey] = requestedRoute[i];
                 continue;
@@ -68,7 +68,7 @@ function extractParameters(url, hashNodes, queryParams) {
         let query = url.slice(url.indexOf('?') + 1).split('&');
         query.forEach(x => {
             const [key, val] = x.split('=');
-            queryParams[key] = val;
+            queryParams[decodeURIComponent(key)] = decodeURIComponent(val);
         })
     }
 }

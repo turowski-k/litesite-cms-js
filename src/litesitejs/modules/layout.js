@@ -63,40 +63,48 @@ async function parseElement(element, viewModel) {
 async function parseIfs(element, viewModel) {
     // this SHOULD be doable with pure regex, but at this point I have no idea how
     // nor if it'd be the most optimal way to go about this
-    let loops = 1000;
-    const regexIf = /{{\?(.+?)}}/g;
+    const regexIfOpen = /{{\?(.+?)}}/g;
     const regexIfClose = /{{\?}}/g;
     let tag;
-    while ((tag = regexIf.exec(element)) !== null || loops > 0) {
-        console.log('NEW MAIN LOOP ====================================')
-        regexIfClose.lastIndex = regexIf.lastIndex;
-        let innerIfsCount = 1;
-        let nextClose, nextOpen;
-        do {
-            console.log('iterate')
-            console.log('>>', nextClose?.index, nextOpen?.index);
-            nextClose = regexIfClose.exec(element);
-            nextOpen = regexIf.exec(element);
-            console.log('>>', nextClose?.index, nextOpen?.index);
-            if (nextOpen?.index < nextClose?.index) {
-                innerIfsCount++;
-                nextClose.lastIndex = nextOpen.lastIndex;
-                console.log(nextOpen[0], '++', innerIfsCount)
+    while ((tag = regexIfOpen.exec(element)) !== null) {
+        // ^ find leftmost opening tag
+        // set openedTags = 1
+        let openedTags = 1;
+        let externalTagIdx = regexIfOpen.lastIndex;
+        let tagOpen, tagClose;
+        // while
+        while (openedTags > 0) {
+            // -- from the point of this tag (tag.lastIndex) find
+            // --> nearest opening tag
+            tagOpen = regexIfOpen.exec(element);
+            // --> nearest closing tag
+            tagClose = regexIfClose.exec(element);
+            // -- if opening is null (no more tags)
+            if (!tagOpen) {
+                // -- -- decrease openedTags
+                openedTags--;
+                regexIfOpen.lastIndex = regexIfClose.lastIndex;
             }
+            // -- else if opening is first (nested)
+            else if (tagOpen.index < tagClose.index) {
+                // -- -- increase openedTags
+                openedTags++;
+                // -- -- set opening and closing last index to leftmost (opening)
+                regexIfClose.lastIndex = regexIfOpen.lastIndex;
+            }
+            // -- else (closing is first, exiting a tag)
             else {
-                innerIfsCount--;
-                nextOpen?.lastIndex ?? 0 = nextClose?.lastIndex;
-                console.log(nextClose[0], '--', innerIfsCount);
+                // -- -- decrease openedTags
+                openedTags--;
+                // -- -- set opening and closing last index to leftmost (closing)
+                regexIfOpen.lastIndex = regexIfClose.lastIndex;
             }
-            loops--;
-        } while (innerIfsCount > 0 && loops > 0)
-        console.log('exiting', loops)
-        element = parseIf(element, tag, nextClose, true);
-        console.log('ELEMENT:', element);
-        regexIf.lastIndex = 0;
+        }
+        regexIfOpen.lastIndex = 0;
         regexIfClose.lastIndex = 0;
-        loops--;
+        element = parseIf(element, tag, tagClose, tag[1]);
     }
+    return element;
 }
 
 async function attemptBoilerplate(element, viewModel) {
@@ -125,11 +133,10 @@ function parseIf(element, openTag, closeTag, hide) {
     const left = element.substring(0, openTag.index);
     const right = element.substring(closeTag.index + closeTag[0].length);
     const middle = element.substring(openTag.index + openTag[0].length, closeTag.index);
-    console.log('LEFT', left);
-    console.log('MIDDLE', middle);
-    console.log('RIGHT', right);
-    return hide === true
-        ? left + '[x]' + right
+    const val = eval(hide);
+    console.log(hide, hide == 'true')
+    return val
+        ? left + right
         : left + middle + right;
 }
 

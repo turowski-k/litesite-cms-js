@@ -1,27 +1,27 @@
 {{=boilerplate}}
 Blog entries
 {{-partial.postEntry|posts}}
-{{?first}}
+{{?true}}
 SHOW FIRST
 {{?}}
 
-{{?second}}
+{{?true}}
 SHOW SECOND
-{{?inner1}}
+{{?false}}
 HIDE NESTED SECOND
 {{?}}
-{{?inner2}}
+{{?true}}
 SHOW NESTED SECOND
 {{?}}
 {{?}}
 
 
-{{?third}}
+{{?false}}
 HIDE THIRD
-{{?inner3}}
+{{?false}}
 INNER HIDE
 {{?}}
-{{?inner4}}
+{{?true}}
 INNER HIDE
 {{?}}
 {{?}}

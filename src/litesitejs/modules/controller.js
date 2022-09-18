@@ -20,20 +20,28 @@ export function blogView(viewModel) {
 }
 
 export function blog(viewModel) {
-    rendererModule.renderView('blog', viewModel);
+    dataModule.getPosts(viewModel.queryParams)
+        .then(ps => {
+            viewModel.posts = ps;
+            rendererModule.renderView('blog', viewModel);
+        });
 }
 
 export function pages(viewModel) {
+    dataModule.getPages(viewModel.queryParams)
+        .then(ps => {
+            viewModel.pages = ps;
+            rendererModule.renderView('pages', viewModel);
+        });
+}
+
+export function pagesView(viewModel) {
     textModule.getPage(viewModel.hashParams.id)
         .then(p => {
             viewModel.content = p;
             return dataModule.getPage(viewModel.hashParams.id);
         }).then(h => {
             viewModel.header = h;
-            rendererModule.renderView('pages', viewModel);
+            rendererModule.renderView('pages-view', viewModel);
         });
-}
-
-export function pagesView(viewModel) {
-    rendererModule.renderView('pages-view', viewModel);
 }

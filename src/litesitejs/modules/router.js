@@ -33,7 +33,7 @@ function resolveRoute(requestedRoute, queryParams) {
                 continue;
             }
             // check if route node calls for parameter and assign it
-            else if (route.path[i][0] === ':') {
+            else if (route.path[i][0] === ':' && requestedRoute[i] !== '') {
                 const nodeKey = route.path[i].slice(1);
                 queryParams[nodeKey] = requestedRoute[i];
                 continue;

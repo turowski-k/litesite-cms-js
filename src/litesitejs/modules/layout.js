@@ -7,9 +7,10 @@ const sanitizations = {
     "{": "&lcub;",
     "}": "&rcub;"
 }
-// [1]: partial modifier
+// {{==}} for boilerplate content container
+// [1]: partial modifier: "-" for partial, "=" for boilerplate
 // if partial: [2] - partial, [3] - iterator (optional)
-// if not partial: [2] - value evaluator, [3] - iterator (optional)
+// if not partial: [2] - value evaluator, [3] - not used
 // {{<boilerplateName}} - used at the beginning of view, signifies the name of the boilerplate to load
 // {{>body}} - in boilerplate view, signifies where to put calling view inside
 
@@ -29,12 +30,26 @@ async function loadElement(name) {
 async function parseElement(element, viewModel) {
     let tag;
     while ((tag = regex.exec(element)) !== null) {
-        if (tag[1] === '-') { // partial for inclusion
+        if (tag[1] === '-' && !tag[3]) { // partial for inclusion
             const partial = await loadElement(tag[2]);
             const parsedPartial = await parseElement(partial, viewModel);
             element = replaceTag(element, tag, parsedPartial);
         }
-        else { // value for evaluation
+        else if (tag[1] === '-') {
+            const iterator = evaluateVariable(tag[3], viewModel);
+            const partial = await loadElement(tag[2]);
+            let combined = "";
+            const regexIndex = regex.lastIndex;
+            for (const i of iterator) {
+                regex.lastIndex = 0;
+                const vm = { iterator: i, parent: viewModel };
+                const parsed = await parseElement(partial, vm);
+                combined = `${combined}${parsed}`;
+            }
+            regex.lastIndex = regexIndex;
+            element = replaceTag(element, tag, combined);
+        }
+        else if (!tag[1] && !tag[3]) { // value for evaluation
             const variable = sanitizeVariable(evaluateVariable(tag[2], viewModel));
             element = replaceTag(element, tag, variable);
         }
@@ -72,6 +87,7 @@ function evaluateVariable(path, viewModel) {
 }
 
 function sanitizeVariable(variable) {
+    if (typeof variable !== 'string') return variable;
     for (const [key, value] of Object.entries(sanitizations)) {
         variable = variable.replaceAll(key, value);
     }

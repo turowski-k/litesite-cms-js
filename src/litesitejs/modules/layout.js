@@ -60,7 +60,7 @@ async function parseElement(element, viewModel) {
     return element;
 }
 
-async function parseIfs(element, viewModel) {
+function parseIfs(element, viewModel) {
     // this SHOULD be doable with pure regex, but at this point I have no idea how
     // nor if it'd be the most optimal way to go about this
     const regexIfOpen = /{{\?(.+?)}}/g;

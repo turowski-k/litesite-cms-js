@@ -1,13 +1,2 @@
 {{=boilerplate}}
-Blog entries
-
-{{?false}}
-JUST SHOW
-{{?true}}
-AND HIDE
-{{?}}
-{{?}}
-
-{{?posts.length > 1}}
-show if more than one post
-{{?}}
+{{-partial.postEntry|posts}}

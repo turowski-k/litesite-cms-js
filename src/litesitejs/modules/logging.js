@@ -11,6 +11,5 @@ export function logWarning(message) {
 }
 
 export function logRoute(route) {
-    console.log(route)
     console.log('🔀', `Resolving route /${route.name}`);
 }

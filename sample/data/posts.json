@@ -1,0 +1,32 @@
+{
+    "posts": [
+        {
+            "id": "sample-post",
+            "name": "Sample post",
+            "date": "2022-06-19",
+            "categories": [
+                "Sample category"
+            ],
+            "tags": [
+                "sample",
+                "first",
+                "hello world"
+            ]
+        },
+        {
+            "id": "markdown-test",
+            "file": "markdown-test.md",
+            "name": "Markdown test",
+            "date": "2022-04-05",
+            "categories": [
+                "Sample category",
+                "Test post"
+            ],
+            "tags": [
+                "sample",
+                "second",
+                "testing"
+            ]
+        }
+    ]
+}

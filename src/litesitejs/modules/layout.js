@@ -30,6 +30,7 @@ async function loadElement(name) {
 
 async function parseElement(element, viewModel) {
     let tag;
+    element = parseIfs(element, viewModel);
     while ((tag = regex.exec(element)) !== null) {
         if (tag[1] === '-' && !tag[3]) { // partial for inclusion
             const partial = await loadElement(tag[2]);
@@ -59,6 +60,53 @@ async function parseElement(element, viewModel) {
     return element;
 }
 
+async function parseIfs(element, viewModel) {
+    // this SHOULD be doable with pure regex, but at this point I have no idea how
+    // nor if it'd be the most optimal way to go about this
+    const regexIfOpen = /{{\?(.+?)}}/g;
+    const regexIfClose = /{{\?}}/g;
+    let tag;
+    while ((tag = regexIfOpen.exec(element)) !== null) {
+        // ^ find leftmost opening tag
+        // set openedTags = 1
+        let openedTags = 1;
+        let externalTagIdx = regexIfOpen.lastIndex;
+        let tagOpen, tagClose;
+        // while
+        while (openedTags > 0) {
+            // -- from the point of this tag (tag.lastIndex) find
+            // --> nearest opening tag
+            tagOpen = regexIfOpen.exec(element);
+            // --> nearest closing tag
+            tagClose = regexIfClose.exec(element);
+            // -- if opening is null (no more tags)
+            if (!tagOpen) {
+                // -- -- decrease openedTags
+                openedTags--;
+                regexIfOpen.lastIndex = regexIfClose.lastIndex;
+            }
+            // -- else if opening is first (nested)
+            else if (tagOpen.index < tagClose.index) {
+                // -- -- increase openedTags
+                openedTags++;
+                // -- -- set opening and closing last index to leftmost (opening)
+                regexIfClose.lastIndex = regexIfOpen.lastIndex;
+            }
+            // -- else (closing is first, exiting a tag)
+            else {
+                // -- -- decrease openedTags
+                openedTags--;
+                // -- -- set opening and closing last index to leftmost (closing)
+                regexIfOpen.lastIndex = regexIfClose.lastIndex;
+            }
+        }
+        regexIfOpen.lastIndex = 0;
+        regexIfClose.lastIndex = 0;
+        element = parseIf(element, tag, tagClose, tag[1], viewModel);
+    }
+    return element;
+}
+
 async function attemptBoilerplate(element, viewModel) {
     regexBoilerplate.lastIndex = 0;
     regexBody.lastIndex = 0;
@@ -79,6 +127,29 @@ function replaceTag(element, tag, replacement) {
     const left = element.substring(0, tag.index);
     const right = element.substring(tag.index + tag[0].length);
     return left + replacement + right;
+}
+
+function parseIf(element, openTag, closeTag, show, viewModel) {
+    const left = element.substring(0, openTag.index);
+    const right = element.substring(closeTag.index + closeTag[0].length);
+    const middle = element.substring(openTag.index + openTag[0].length, closeTag.index);
+    // maybe, just in case, offer some failsafe inc case vm already has litesitejsevaluator?    
+    let value = evaluateWithinScope(openTag[1], viewModel);
+    return value
+        ? left + middle + right
+        : left + right;
+}
+
+function evaluateWithinScope(evaluator, context) {
+    let value = false;
+    try {
+        eval(`value = ${evaluator};`);
+    } catch (e) {
+        try {
+            eval(`value = context.${evaluator};`);
+        } catch (e) { }
+    }
+    return value;
 }
 
 function evaluateVariable(path, viewModel) {

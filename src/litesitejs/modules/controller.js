@@ -6,38 +6,37 @@ import * as configModule from './config.js';
 const contentNode = document.getElementById('content-node');
 
 export async function home(viewModel) {
-    viewModel.menu = await getMenu(viewModel);
+    viewModel.config = await getConfig(viewModel);
     rendererModule.renderView('home', viewModel);
 }
 
 export async function blogView(viewModel) {
-    viewModel.menu = await getMenu(viewModel);
+    viewModel.config = await getConfig(viewModel);
     viewModel.content = await textModule.getPost(viewModel.hashParams.id);
     viewModel.header = await dataModule.getPost(viewModel.hashParams.id);
-    console.log(viewModel);
     rendererModule.renderView('blog-view', viewModel);
 }
 
 export async function blog(viewModel) {
-    viewModel.menu = await getMenu(viewModel);
+    viewModel.config = await getConfig(viewModel);
     viewModel.posts = await dataModule.getPosts(viewModel.queryParams);
     rendererModule.renderView('blog', viewModel);
 }
 
 export async function pages(viewModel) {
-    viewModel.menu = await getMenu(viewModel);
+    viewModel.config = await getConfig(viewModel);
     viewModel.pages = await dataModule.getPages(viewModel.queryParams);
     rendererModule.renderView('pages', viewModel);
 }
 
 export async function pagesView(viewModel) {
-    viewModel.menu = await getMenu(viewModel);
+    viewModel.config = await getConfig(viewModel);
     viewModel.content = await textModule.getPage(viewModel.hashParams.id);
     viewModel.header = await dataModule.getPage(viewModel.hashParams.id);
     rendererModule.renderView('pages-view', viewModel);
 }
 
-async function getMenu(viewModel) {
-    const menu = await configModule.getMenu();
-    return menu;
+async function getConfig(viewModel) {
+    const cfg = await configModule.getConfig();
+    return cfg;
 }

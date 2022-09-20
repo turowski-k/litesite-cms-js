@@ -1,5 +1,6 @@
-<div>
-    <h1><a href="#/blog/{{iterator.id}}">{{iterator.name}}</a><br></h1>
-    Categories: {{-partial.categoryPill|iterator.categories}}<br />
-    Tags: {{-partial.tagPill|iterator.tags}}
+<div class="post-entry">
+    <h2><a href="#/blog/{{iterator.id}}">{{iterator.name}}</a><br></h2>
+    <span class="post-entry-pills">Categories: {{-partial.categoryPill|iterator.categories}}</span>
+    <span class="post-entry-pills">Tags: {{-partial.tagPill|iterator.tags}}</span>
+    {{?iterator.blurb != undefined}}<p class="post-entry-blurb">{{iterator.blurb}}</p>{{?}}
 </div>

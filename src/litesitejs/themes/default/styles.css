@@ -143,3 +143,34 @@ footer {
         display: inline-block;
     }
 }
+
+.pill {
+    font-size: 0.8rem;
+    line-height: 0.8rem;
+    color: white;
+    display: inline-block;
+    padding: 5px;
+    margin: 0 3px;
+    border-radius: 20px;
+}
+
+.pill a {
+    text-decoration: none;
+}
+
+
+.pill-category {
+    background-color: red;
+}
+
+.pill-category a {
+    color: white;
+}
+
+.pill-tag {
+    background-color: blue;
+}
+
+.pill-tag a {
+    color: white;
+}

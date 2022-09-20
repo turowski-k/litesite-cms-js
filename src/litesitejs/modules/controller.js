@@ -12,8 +12,9 @@ export async function home(viewModel) {
 
 export async function blogView(viewModel) {
     viewModel.menu = await getMenu(viewModel);
-    viewModel.content = await dataModule.getPost(viewModel.hashParams.id);
+    viewModel.content = await textModule.getPost(viewModel.hashParams.id);
     viewModel.header = await dataModule.getPost(viewModel.hashParams.id);
+    console.log(viewModel);
     rendererModule.renderView('blog-view', viewModel);
 }
 
@@ -31,8 +32,8 @@ export async function pages(viewModel) {
 
 export async function pagesView(viewModel) {
     viewModel.menu = await getMenu(viewModel);
-    viewModel.content = textModule.getPage(viewModel.hashParams.id);
-    viewModel.header = textModule.getPage(viewModel.hashParams.id);
+    viewModel.content = await textModule.getPage(viewModel.hashParams.id);
+    viewModel.header = await dataModule.getPage(viewModel.hashParams.id);
     rendererModule.renderView('pages-view', viewModel);
 }
 

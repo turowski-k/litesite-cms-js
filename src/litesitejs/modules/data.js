@@ -76,21 +76,21 @@ async function loadConfig() {
     await getJsonContent('./data/config.json')
         .then(c => {
             c.menu.forEach(m => {
-                switch (m.type) {
-                    case 'post':
-                    case 'page':
-                        m.link = `#/${m.type}/${m.id}`;
-                        break;
-                    case 'special':
-                        m.link = m.id === 'posts'
-                            ? '#/post'
-                            : m.id === 'pages'
-                                ? 'page'
-                                : '';
-                        if (m.categories?.length) {
-                            m.link += '?category=' + m.categories.join(',');
-                        }
+                let link = `#/${m.type}/`;
+                if (m.id != undefined) {
+                    link += m.id;
                 }
+                const query = [];
+                if (m.category?.length) {
+                    query.push(`category=${m.category.join('|')}`);
+                }
+                if (m.tag?.length) {
+                    query.push(`tag=${m.tag.join('|')}`);
+                }
+                if (query.length) {
+                    link += `?${query.join('&')}`;
+                }
+                m.link = link;
             });
             return c;
         }).then(c => config = c);

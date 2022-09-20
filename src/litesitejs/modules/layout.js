@@ -52,7 +52,7 @@ async function parseElement(element, viewModel) {
             element = replaceTag(element, tag, combined);
         }
         else if (!tag[1] && !tag[3]) { // value for evaluation
-            const variable = sanitizeVariable(e(tag[2], viewModel));
+            const variable = sanitizeVariable(evaluateWithinScope(tag[2], viewModel));
             element = replaceTag(element, tag, variable);
         }
         regex.lastIndex = 0;
@@ -141,7 +141,6 @@ function parseIf(element, openTag, closeTag, show, viewModel) {
 }
 
 function evaluateWithinScope(evaluator, context) {
-    console.log(evaluator, context);
     const vm = {
         ...context, evaluate: function (evaluator) {
             let value = false;

@@ -1,20 +1,32 @@
 {
+    "settings": {
+        "theme": "default",
+        "title": "My Litesite blog",
+        "footer": {
+            "year": 2022,
+            "notice": "LitesiteCMS.js",
+            "hidePoweredBy": false,
+            "hideToTheTop": false
+        }
+    },
+    "home": {
+        "type": "pages",
+        "id": "sample-page"
+    },
     "menu": [
         {
             "name": "Home",
-            "type": "page",
+            "type": "pages",
             "id": "sample-page"
         },
         {
             "name": "Blog",
-            "type": "special",
-            "id": "posts"
+            "type": "blog"
         },
         {
             "name": "Tests",
-            "type": "special",
-            "id": "posts",
-            "categories": [
+            "type": "blog",
+            "category": [
                 "Test post"
             ]
         }

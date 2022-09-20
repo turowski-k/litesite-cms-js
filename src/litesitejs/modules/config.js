@@ -8,3 +8,8 @@ export async function getMenu() {
     const config = await dataModule.getConfig();
     return config.menu;
 }
+
+export async function getConfig() {
+    const config = await dataModule.getConfig();
+    return config;
+}

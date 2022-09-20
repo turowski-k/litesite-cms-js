@@ -24,7 +24,6 @@ export async function getView(name, viewModel) {
 
 async function loadElement(name) {
     const path = `./litesitejs/themes/${configModule.getTheme()}/partials/${name}.html`;
-    console.log(name);
     const element = await fetch(path).then(el => el.text());
     return element;
 }
@@ -43,7 +42,6 @@ async function parseElement(element, viewModel) {
             const partial = await loadElement(tag[2]);
             let combined = "";
             const regexIndex = regex.lastIndex;
-            console.log(iterator);
             for (const i of iterator) {
                 regex.lastIndex = 0;
                 const vm = { iterator: i, parent: viewModel };

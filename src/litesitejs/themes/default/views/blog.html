@@ -1,15 +1,15 @@
 {{=boilerplate}}
 <h1>Showing
-    {{?this.queryParams.categories != undefined && this.queryParams.tags != undefined}}
+    {{?this.queryParams.category != undefined && this.queryParams.tag != undefined}}
     posts by tags and categories
     {{?}}
-    {{?this.queryParams.categories != undefined && this.queryParams.tags == undefined}}
-    posts by tags
-    {{?}}
-    {{?this.queryParams.categories == undefined && this.queryParams.tags != undefined}}
+    {{?this.queryParams.category != undefined && this.queryParams.tag == undefined}}
     posts by categories
     {{?}}
-    {{?this.queryParams.categories == undefined && this.queryParams.tags == undefined}}
+    {{?this.queryParams.category == undefined && this.queryParams.tag != undefined}}
+    posts by tags
+    {{?}}
+    {{?this.queryParams.category == undefined && this.queryParams.tag == undefined}}
     all posts
     {{?}}
 </h1>

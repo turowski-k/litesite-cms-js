@@ -12,8 +12,8 @@ const sanitizations = {
 // [1]: partial modifier: "-" for partial, "=" for boilerplate
 // if partial: [2] - partial, [3] - iterator (optional)
 // if not partial: [2] - value evaluator, [3] - not used
-// {{<boilerplateName}} - used at the beginning of view, signifies the name of the boilerplate to load
-// {{>body}} - in boilerplate view, signifies where to put calling view inside
+// {{=boilerplateName}} - used at the beginning of view, signifies the name of the boilerplate to load
+// {{==}} - in boilerplate view, signifies where to put calling view inside
 
 export async function getView(name, viewModel) {
     let view = await fetch(`./litesitejs/themes/${configModule.getTheme()}/views/${name}.html`).then(x => x.text());
@@ -54,11 +54,7 @@ async function parseElement(element, viewModel) {
             element = replaceTag(element, tag, combined);
         }
         else if (!tag[1] && !tag[3]) { // value for evaluation
-            console.log('var', tag[2])
-            let variable = evaluateWithinScope(tag[2], viewModel);
-            if (typeof variable === 'string') {
-                variable = sanitizeVariable(variable);
-            }
+            const variable = sanitizeVariable(evaluateWithinScope(tag[2], viewModel));
             element = replaceTag(element, tag, variable);
         }
         regex.lastIndex = 0;
@@ -120,7 +116,7 @@ async function attemptBoilerplate(element, viewModel) {
     if (!boilerplateTag) return element;
     element = replaceTag(element, boilerplateTag, '');
     let boilerplate = await loadElement(boilerplateTag[2]);
-    boilerplate = await parseElement(boilerplate);
+    boilerplate = await parseElement(boilerplate, viewModel);
 
     const bodyTag = regexBody.exec(boilerplate);
     // in theory you COULD have a boilerplate without body
@@ -146,16 +142,21 @@ function parseIf(element, openTag, closeTag, show, viewModel) {
         : left + right;
 }
 
-function evaluateWithinScope(expression, context) {
-    context = {
-        ...context, _evaluate: function (expr) {
+function evaluateWithinScope(evaluator, context) {
+    const vm = {
+        ...context, evaluate: function (evaluator) {
             let value = false;
-            eval(`value = (${expr});`);
-            console.log(expr, value);
+            try {
+                eval(`value = ${evaluator};`);
+            } catch (e) {
+                try {
+                    eval(`value = context.${evaluator};`);
+                } catch (e) { loggingModule.logError('Couldn\'t evaluate properly: ' + evaluator); }
+            }
             return value;
         }
-    }
-    let value = context._evaluate(expression);
+    };
+    const value = vm.evaluate(evaluator);
     return value;
 }
 

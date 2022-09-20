@@ -2,6 +2,7 @@ import * as logging from './logging.js';
 
 const posts = [];
 const pages = [];
+let config;
 let initialized = false;
 
 export async function getTextContent(filename) {
@@ -16,12 +17,15 @@ export async function getJsonContent(filename) {
         .catch(e => logging.logError(e));
 }
 
+export function getConfig() {
+    return ensureInitialized().then(x => config);
+}
+
 export function getPosts(queryParams) {
     return ensureInitialized().then(x => {
         if (!queryParams.category && !queryParams.tag) return posts;
         let filtered = posts;
         if (queryParams.category) {
-            console.log(queryParams.category)
             filtered = filtered.filter(y => y.categories.some(z => z == queryParams.category));
         }
         if (queryParams.tag) {
@@ -58,13 +62,38 @@ function ensureInitialized() {
 async function init() {
     await loadPages();
     await loadPosts();
+    await loadConfig();
     initialized = true;
-    logging.logInfo(`Indexes initialized, posts: ${posts.length}, pages: ${pages.length}`);
+    logging.logInfo(`Indexes initialized, posts: ${posts.length}, pages: ${pages.length}, menu entries: ${config.menu.length}`);
 }
 
 async function loadPages() {
     await getJsonContent('./data/pages.json')
         .then(p => pages.push(...p.pages));
+}
+
+async function loadConfig() {
+    await getJsonContent('./data/config.json')
+        .then(c => {
+            c.menu.forEach(m => {
+                let link = `#/${m.type}/`;
+                if (m.id != undefined) {
+                    link += m.id;
+                }
+                const query = [];
+                if (m.category?.length) {
+                    query.push(`category=${m.category.join('|')}`);
+                }
+                if (m.tag?.length) {
+                    query.push(`tag=${m.tag.join('|')}`);
+                }
+                if (query.length) {
+                    link += `?${query.join('&')}`;
+                }
+                m.link = link;
+            });
+            return c;
+        }).then(c => config = c);
 }
 
 async function loadPosts() {

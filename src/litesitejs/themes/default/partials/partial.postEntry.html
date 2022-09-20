@@ -1,5 +1,5 @@
 <div>
-    <h2><a href="#/blog/{{this.iterator.id}}">{{this.iterator.name}}</a></h2>
-    Categories: {{-partial.categoryPill|this.iterator.categories}}<br />
-    Tags: {{-partial.categoryPill|this.iterator.tags}}
+    <h1><a href="#/blog/{{iterator.id}}">{{iterator.name}}</a><br></h1>
+    Categories: {{-partial.categoryPill|iterator.categories}}<br />
+    Tags: {{-partial.tagPill|iterator.tags}}
 </div>

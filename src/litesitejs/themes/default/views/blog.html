@@ -1,2 +1,16 @@
 {{=boilerplate}}
-{{-partial.postEntry|posts}}
+<h1>Showing
+    {{?this.queryParams.categories != undefined && this.queryParams.tags != undefined}}
+    posts by tags and categories
+    {{?}}
+    {{?this.queryParams.categories != undefined && this.queryParams.tags == undefined}}
+    posts by tags
+    {{?}}
+    {{?this.queryParams.categories == undefined && this.queryParams.tags != undefined}}
+    posts by categories
+    {{?}}
+    {{?this.queryParams.categories == undefined && this.queryParams.tags == undefined}}
+    all posts
+    {{?}}
+</h1>
+{{-partial.postEntry|this.posts}}

@@ -1,8 +1,8 @@
 import * as configModule from './config.js';
 import * as loggingModule from './logging.js';
 
-const regex = /{{([-]){0,1}([\w\.\-\_]+)(?:\|([\w\.\-\_]+)){0,1}}}/g;
-const regexBoilerplate = /{{([=]){0,1}([\w\.\-\_]+)(?:\|([\w\.\-\_]+)){0,1}}}/g;
+const regex = /{{([-]){0,1}([^?=\|][^=\|]*?)(?:\|(.+?)){0,1}}}/g;
+const regexBoilerplate = /{{([=]){0,1}([\w\.\-\_]+?)(?:\|([\w\.\-\_]+)){0,1}}}/g;
 const regexBody = /{{==}}/g;
 const sanitizations = {
     "{": "&lcub;",
@@ -24,6 +24,7 @@ export async function getView(name, viewModel) {
 
 async function loadElement(name) {
     const path = `./litesitejs/themes/${configModule.getTheme()}/partials/${name}.html`;
+    console.log(name);
     const element = await fetch(path).then(el => el.text());
     return element;
 }
@@ -38,10 +39,11 @@ async function parseElement(element, viewModel) {
             element = replaceTag(element, tag, parsedPartial);
         }
         else if (tag[1] === '-') {
-            const iterator = evaluateVariable(tag[3], viewModel);
+            const iterator = evaluateWithinScope(tag[3], viewModel);
             const partial = await loadElement(tag[2]);
             let combined = "";
             const regexIndex = regex.lastIndex;
+            console.log(iterator);
             for (const i of iterator) {
                 regex.lastIndex = 0;
                 const vm = { iterator: i, parent: viewModel };
@@ -52,7 +54,11 @@ async function parseElement(element, viewModel) {
             element = replaceTag(element, tag, combined);
         }
         else if (!tag[1] && !tag[3]) { // value for evaluation
-            const variable = sanitizeVariable(evaluateVariable(tag[2], viewModel));
+            console.log('var', tag[2])
+            let variable = evaluateWithinScope(tag[2], viewModel);
+            if (typeof variable === 'string') {
+                variable = sanitizeVariable(variable);
+            }
             element = replaceTag(element, tag, variable);
         }
         regex.lastIndex = 0;
@@ -133,31 +139,24 @@ function parseIf(element, openTag, closeTag, show, viewModel) {
     const left = element.substring(0, openTag.index);
     const right = element.substring(closeTag.index + closeTag[0].length);
     const middle = element.substring(openTag.index + openTag[0].length, closeTag.index);
-    // maybe, just in case, offer some failsafe inc case vm already has litesitejsevaluator?    
+    // maybe, just in case, offer some failsafe inc case vm already has litesitejsevaluator?
     let value = evaluateWithinScope(openTag[1], viewModel);
     return value
         ? left + middle + right
         : left + right;
 }
 
-function evaluateWithinScope(evaluator, context) {
-    let value = false;
-    try {
-        eval(`value = ${evaluator};`);
-    } catch (e) {
-        try {
-            eval(`value = context.${evaluator};`);
-        } catch (e) { }
+function evaluateWithinScope(expression, context) {
+    context = {
+        ...context, _evaluate: function (expr) {
+            let value = false;
+            eval(`value = (${expr});`);
+            console.log(expr, value);
+            return value;
+        }
     }
+    let value = context._evaluate(expression);
     return value;
-}
-
-function evaluateVariable(path, viewModel) {
-    let variable = viewModel;
-    for (const node of path.split('.')) {
-        variable = variable[node];
-    }
-    return variable;
 }
 
 function sanitizeVariable(variable) {

@@ -16,9 +16,9 @@ You can find a live demo [HERE](https://tk-litesitejs-demo.glitch.me/#/blog/samp
 Some of functionalities that LitesiteCMS provides:
 * Listing and displaying posts
 * Displaying non-blog pages
-* ~~Filtering posts by tags and categories~~*
-* ~~Custom top menu page structure~~*
-* ~~Markdown parsing~~*
+* Filtering posts by tags and categories
+* Custom top menu page structure
+* Markdown parsing
 * ~~Themes~~*
 
 *\*will provide, that is - when it's released*

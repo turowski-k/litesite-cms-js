@@ -1,6 +1,8 @@
 <div class="post-entry">
     <h2><a href="#/blog/{{iterator.id}}">{{iterator.name}}</a><br></h2>
-    <span class="post-entry-pills">Categories: {{-partial.categoryPill|iterator.categories}}</span>
-    <span class="post-entry-pills">Tags: {{-partial.tagPill|iterator.tags}}</span>
+    <div class="post-entry-pills">
+        <span class="post-entry-pills">Categories: {{-partial.categoryPill|iterator.categories}}</span>
+        <span class="post-entry-pills">Tags: {{-partial.tagPill|iterator.tags}}</span>
+    </div>
     {{?iterator.blurb != undefined}}<p class="post-entry-blurb">{{iterator.blurb}}</p>{{?}}
 </div>

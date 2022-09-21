@@ -39,13 +39,11 @@ Make sure you follow these rules when contributing changes to this project:
 
 This isn't a case of hubris. Quite opposite. As I'm writing this, in the early stages of LitesiteCMS development, I'm still very inept at JavaScript. This is a solo project I intend to learn JS with and enjoy every bit of it.
 
-~~**But** while I don't want anyone else to contribute code to the repository, if anyone wishes to contribute bug findings or suggestions, [Issues](https://github.com/turowski-k/litesitejs/issues) is the way to go about it. Open one, tag it properly and describe your findings.~~
+**But** while I don't want anyone else to contribute code to the repository, if anyone wishes to contribute bug findings or suggestions, [Issues](https://github.com/turowski-k/litesitejs/issues) is the way to go about it. Open one, tag it properly and describe your findings.
 
-~~I will appreciate **greatly** any insights on improving the app.~~
+I will appreciate **greatly** any insights on improving the app.
 
-~~At the same time, please remember that some of the stuff is coded in a way that might not make sense for one of two reasons. Firstly, I am inexperienced and willing to improve on it. Secondly, I might've included something that didn't make sense, because I wanted to learn something by coding it.~~
-
-Since the project is still in very early and very active stages of development, it will obviously be buggy. There's no point in pointing out any issues and suggestions yet! Thank you for understanding!
+At the same time, please remember that some of the stuff is coded in a way that might not make sense for one of two reasons. Firstly, I am inexperienced and willing to improve on it. Secondly, I might've included something that didn't make sense, because I wanted to learn something by coding it.
 
 ## License
 This project is licensed under the terms of the [**MIT** license](https://github.com/turowski-k/LitesiteCMS.js/blob/dev/LICENSE).

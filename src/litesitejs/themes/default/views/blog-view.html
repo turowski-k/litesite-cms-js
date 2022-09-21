@@ -1,2 +1,8 @@
 {{=boilerplate}}
+<h1>{{this.header.name}}</h1>
+<div class="post-entry-pills">
+    <span class="post-entry-pills">Categories: {{-partial.categoryPill|this.header.categories}}</span>
+    <span class="post-entry-pills">Tags: {{-partial.tagPill|this.header.tags}}</span>
+</div>
+<hr>
 {{this.content}}

@@ -2,6 +2,7 @@
     "posts": [
         {
             "id": "sample-post",
+            "file": "sample-post.md",
             "name": "Sample post",
             "date": "2022-06-19",
             "categories": [
@@ -11,7 +12,8 @@
                 "sample",
                 "first",
                 "hello world"
-            ]
+            ],
+            "blurb": "This is a sample post blurb. This isn't a required field, but you can use it to display either a fragment of your post content or to provide a short summary of the article you're publishing."
         },
         {
             "id": "markdown-test",

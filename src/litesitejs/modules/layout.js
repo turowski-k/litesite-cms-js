@@ -1,8 +1,8 @@
 import * as configModule from './config.js';
 import * as loggingModule from './logging.js';
 
-const regex = /{{([-]){0,1}([\w\.\-\_]+)(?:\|([\w\.\-\_]+)){0,1}}}/g;
-const regexBoilerplate = /{{([=]){0,1}([\w\.\-\_]+)(?:\|([\w\.\-\_]+)){0,1}}}/g;
+const regex = /{{([-]){0,1}([^?=\|][^=\|]*?)(?:\|(.+?)){0,1}}}/g;
+const regexBoilerplate = /{{([=]){0,1}([\w\.\-\_]+?)(?:\|([\w\.\-\_]+)){0,1}}}/g;
 const regexBody = /{{==}}/g;
 const sanitizations = {
     "{": "&lcub;",
@@ -12,8 +12,8 @@ const sanitizations = {
 // [1]: partial modifier: "-" for partial, "=" for boilerplate
 // if partial: [2] - partial, [3] - iterator (optional)
 // if not partial: [2] - value evaluator, [3] - not used
-// {{<boilerplateName}} - used at the beginning of view, signifies the name of the boilerplate to load
-// {{>body}} - in boilerplate view, signifies where to put calling view inside
+// {{=boilerplateName}} - used at the beginning of view, signifies the name of the boilerplate to load
+// {{==}} - in boilerplate view, signifies where to put calling view inside
 
 export async function getView(name, viewModel) {
     let view = await fetch(`./litesitejs/themes/${configModule.getTheme()}/views/${name}.html`).then(x => x.text());
@@ -38,7 +38,7 @@ async function parseElement(element, viewModel) {
             element = replaceTag(element, tag, parsedPartial);
         }
         else if (tag[1] === '-') {
-            const iterator = evaluateVariable(tag[3], viewModel);
+            const iterator = evaluateWithinScope(tag[3], viewModel);
             const partial = await loadElement(tag[2]);
             let combined = "";
             const regexIndex = regex.lastIndex;
@@ -52,7 +52,7 @@ async function parseElement(element, viewModel) {
             element = replaceTag(element, tag, combined);
         }
         else if (!tag[1] && !tag[3]) { // value for evaluation
-            const variable = sanitizeVariable(evaluateVariable(tag[2], viewModel));
+            const variable = sanitizeVariable(evaluateWithinScope(tag[2], viewModel));
             element = replaceTag(element, tag, variable);
         }
         regex.lastIndex = 0;
@@ -114,7 +114,7 @@ async function attemptBoilerplate(element, viewModel) {
     if (!boilerplateTag) return element;
     element = replaceTag(element, boilerplateTag, '');
     let boilerplate = await loadElement(boilerplateTag[2]);
-    boilerplate = await parseElement(boilerplate);
+    boilerplate = await parseElement(boilerplate, viewModel);
 
     const bodyTag = regexBody.exec(boilerplate);
     // in theory you COULD have a boilerplate without body
@@ -133,7 +133,7 @@ function parseIf(element, openTag, closeTag, show, viewModel) {
     const left = element.substring(0, openTag.index);
     const right = element.substring(closeTag.index + closeTag[0].length);
     const middle = element.substring(openTag.index + openTag[0].length, closeTag.index);
-    // maybe, just in case, offer some failsafe inc case vm already has litesitejsevaluator?    
+    // maybe, just in case, offer some failsafe inc case vm already has litesitejsevaluator?
     let value = evaluateWithinScope(openTag[1], viewModel);
     return value
         ? left + middle + right
@@ -141,23 +141,21 @@ function parseIf(element, openTag, closeTag, show, viewModel) {
 }
 
 function evaluateWithinScope(evaluator, context) {
-    let value = false;
-    try {
-        eval(`value = ${evaluator};`);
-    } catch (e) {
-        try {
-            eval(`value = context.${evaluator};`);
-        } catch (e) { }
-    }
+    const vm = {
+        ...context, evaluate: function (evaluator) {
+            let value = false;
+            try {
+                eval(`value = ${evaluator};`);
+            } catch (e) {
+                try {
+                    eval(`value = context.${evaluator};`);
+                } catch (e) { loggingModule.logError('Couldn\'t evaluate properly: ' + evaluator); }
+            }
+            return value;
+        }
+    };
+    const value = vm.evaluate(evaluator);
     return value;
-}
-
-function evaluateVariable(path, viewModel) {
-    let variable = viewModel;
-    for (const node of path.split('.')) {
-        variable = variable[node];
-    }
-    return variable;
 }
 
 function sanitizeVariable(variable) {

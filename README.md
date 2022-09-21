@@ -9,6 +9,8 @@ Why?
 
 There's a handful of obvious downsides: you have to edit the files on the ftp to change the content and data is always publicly available for anyone to scrape.
 
+You can find a live demo [HERE](https://tk-litesitejs-demo.glitch.me/#/blog/sample-post), although it can run a little sluggish on Glitch.com
+
 ## Features
 
 Some of functionalities that LitesiteCMS provides:

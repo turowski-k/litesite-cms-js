@@ -1,13 +1,16 @@
 {{=boilerplate}}
-Blog entries
-
-{{?false}}
-JUST SHOW
-{{?true}}
-AND HIDE
-{{?}}
-{{?}}
-
-{{?posts.length > 1}}
-show if more than one post
-{{?}}
+<h1>Showing
+    {{?this.queryParams.category != undefined && this.queryParams.tag != undefined}}
+    posts by tags and categories
+    {{?}}
+    {{?this.queryParams.category != undefined && this.queryParams.tag == undefined}}
+    posts by categories
+    {{?}}
+    {{?this.queryParams.category == undefined && this.queryParams.tag != undefined}}
+    posts by tags
+    {{?}}
+    {{?this.queryParams.category == undefined && this.queryParams.tag == undefined}}
+    all posts
+    {{?}}
+</h1>
+{{-partial.postEntry|this.posts}}

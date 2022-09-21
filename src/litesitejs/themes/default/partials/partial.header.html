@@ -1,10 +1,10 @@
 <header class="block-bg">
-    <h1>My homepage</h1>
+    <h1>
+        {{this.config.settings.title}}
+    </h1>
     <nav>
         <menu>
-            <li>Home</li>
-            <li>About</li>
-            <li>Blog</li>
+            {{-partial.menuEntry|this.config.menu}}
         </menu>
     </nav>
 </header>

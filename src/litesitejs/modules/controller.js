@@ -1,47 +1,42 @@
 import * as rendererModule from './renderer.js';
 import * as textModule from './text.js';
 import * as dataModule from './data.js';
+import * as configModule from './config.js';
 
 const contentNode = document.getElementById('content-node');
 
-export function home(viewModel) {
+export async function home(viewModel) {
+    viewModel.config = await getConfig(viewModel);
     rendererModule.renderView('home', viewModel);
 }
 
-export function blogView(viewModel) {
-    textModule.getPost(viewModel.hashParams.id)
-        .then(p => {
-            viewModel.content = p;
-            return dataModule.getPost(viewModel.hashParams.id);
-        }).then(h => {
-            viewModel.header = h;
-            rendererModule.renderView('blog-view', viewModel);
-        });
+export async function blogView(viewModel) {
+    viewModel.config = await getConfig(viewModel);
+    viewModel.content = await textModule.getPost(viewModel.hashParams.id);
+    viewModel.header = await dataModule.getPost(viewModel.hashParams.id);
+    rendererModule.renderView('blog-view', viewModel);
 }
 
-export function blog(viewModel) {
-    dataModule.getPosts(viewModel.queryParams)
-        .then(ps => {
-            viewModel.posts = ps;
-            rendererModule.renderView('blog', viewModel);
-        });
+export async function blog(viewModel) {
+    viewModel.config = await getConfig(viewModel);
+    viewModel.posts = await dataModule.getPosts(viewModel.queryParams);
+    rendererModule.renderView('blog', viewModel);
 }
 
-export function pages(viewModel) {
-    dataModule.getPages(viewModel.queryParams)
-        .then(ps => {
-            viewModel.pages = ps;
-            rendererModule.renderView('pages', viewModel);
-        });
+export async function pages(viewModel) {
+    viewModel.config = await getConfig(viewModel);
+    viewModel.pages = await dataModule.getPages(viewModel.queryParams);
+    rendererModule.renderView('pages', viewModel);
 }
 
-export function pagesView(viewModel) {
-    textModule.getPage(viewModel.hashParams.id)
-        .then(p => {
-            viewModel.content = p;
-            return dataModule.getPage(viewModel.hashParams.id);
-        }).then(h => {
-            viewModel.header = h;
-            rendererModule.renderView('pages-view', viewModel);
-        });
+export async function pagesView(viewModel) {
+    viewModel.config = await getConfig(viewModel);
+    viewModel.content = await textModule.getPage(viewModel.hashParams.id);
+    viewModel.header = await dataModule.getPage(viewModel.hashParams.id);
+    rendererModule.renderView('pages-view', viewModel);
+}
+
+async function getConfig(viewModel) {
+    const cfg = await configModule.getConfig();
+    return cfg;
 }

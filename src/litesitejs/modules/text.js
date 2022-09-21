@@ -11,7 +11,7 @@ export async function getPost(id) {
 
 export async function getPage(id) {
     const page = await dataModule.getPage(id);
-    const content = await getFileContent(`'./data/pages/${page.file ?? page.id + '.md'}`);
+    const content = await getFileContent(`./data/pages/${page.file ?? page.id + '.md'}`);
     return parser.parseMarkdown(content);
 }
 
